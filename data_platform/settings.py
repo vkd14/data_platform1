@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'data_platform.wsgi.application'
 DATABASES = {
     'default' : {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dataplatform_db',  
-        'USER': 'root',  
-        'PASSWORD': 'varun123',  
-        'HOST': '127.0.0.1',  
+        'NAME': 'once_again_dp',
+        'USER': 'root',
+        'PASSWORD': 'varun123',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
