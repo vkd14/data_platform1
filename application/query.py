@@ -53,11 +53,7 @@ def upload_dataset(dataset_name, resource_file, description):
         resource_file (_type_): _description_
         description (_type_): _description_
     """
-    # check_record = Dataset.objects.raw('SELECT COUNT(*) FROM application_dataset WHERE name= %s', [dataset_name])
-    # count = check_record[0]
 
-    # cursor.execute(f'INSERT INTO application_resource VALUES ({dataset_name+RESOURCE_SUFFIX},{location},{dataset_name})')
-    # cursor.execute(f'INSERT INTO application_dataset VALUES ({dataset_name},tags,{description})')
     count = Dataset.objects.filter(name=dataset_name).count()
     if not count:
         location, tags = make_csv(dataset_name, count, resource_file, description)
