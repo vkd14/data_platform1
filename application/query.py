@@ -12,11 +12,27 @@ from application.models import Dataset, Resource
 
 
 def all_dataset():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     datasets = Dataset.objects.raw('SELECT name FROM application_dataset')
     return datasets
 
 
 def make_csv(dataset_name, count, resource_file, description):
+    """_summary_
+
+    Args:
+        dataset_name (_type_): _description_
+        count (_type_): _description_
+        resource_file (_type_): _description_
+        description (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     RESOURCE_SUFFIX = "_resource_file.csv"
     cursor = connection.cursor()
     csvreader = csv.reader(codecs.iterdecode(resource_file, 'utf-8'))
@@ -30,6 +46,13 @@ def make_csv(dataset_name, count, resource_file, description):
 
 
 def upload_dataset(dataset_name, resource_file, description):
+    """_summary_
+
+    Args:
+        dataset_name (_type_): _description_
+        resource_file (_type_): _description_
+        description (_type_): _description_
+    """
     # check_record = Dataset.objects.raw('SELECT COUNT(*) FROM application_dataset WHERE name= %s', [dataset_name])
     # count = check_record[0]
 
@@ -48,11 +71,27 @@ def upload_dataset(dataset_name, resource_file, description):
 
 
 def fetch_dataset_details(dataset_name):
+    """_summary_
+
+    Args:
+        dataset_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     dataset = Dataset.objects.raw("SELECT * FROM application_dataset WHERE name= %s", [dataset_name])
     return dataset
 
 
 def fetch_dataset(dataset_name):
+    """_summary_
+
+    Args:
+        dataset_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     # Define Django project base directory
     # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # Define text file name
@@ -78,6 +117,14 @@ def fetch_dataset(dataset_name):
 
 
 def getfiles(dataset_name):
+    """_summary_
+
+    Args:
+        dataset_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     # Files (local path) to put in the .zip
     # FIXME: Change this (get paths from DB etc)
     # filenames = ["/tmp/file1.txt", "/tmp/file2.txt"]

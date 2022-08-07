@@ -7,12 +7,20 @@ from . import query
 from . import serializers
 from . import models
 from django.http import HttpResponseRedirect
-from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='Pastebin API')
+
+
 
 # Create your views here.
 def all_dataset(request):
+    """_summary_
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     dataset_names = []
     datasets = query.all_dataset()
     if datasets:
@@ -21,7 +29,7 @@ def all_dataset(request):
         return HttpResponse(f"Datasets List : {dataset_names}")
     else:
         return HttpResponse("No Datasets to Return!")
-    # return HttpResponse(query.all_dataset())
+  
 
 
 # def upload_dataset(request):
@@ -40,20 +48,63 @@ def all_dataset(request):
 #     return HttpResponse("Fetch Data")
 
 def fetch_dataset(request, dataset_name):
+    """_summary_
+
+    Args:
+        request (_type_): _description_
+        dataset_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     return HttpResponse(query.fetch_dataset(dataset_name))
 
 
 def fetch_dataset_detail(request, dataset_name):
+    """_summary_
+
+    Args:
+        request (_type_): _description_
+        dataset_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     dataset = query.fetch_dataset_details(dataset_name)
     return HttpResponse(f'name = {dataset[0].name},tags = {dataset[0].tags}, description = {dataset[0].description}')
 
 def get_resorce_data(request, dataset_name):
+    """_summary_
+
+    Args:
+        request (_type_): _description_
+        dataset_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     return (query.getfiles(dataset_name))
 
 class UploadFileView(generics.CreateAPIView):
+    """_summary_
+
+    Args:
+        generics (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     serializer_class = serializers.FileUploadSerializer
 
     def post(self, request, *args, **kwargs):
+        """_summary_
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         file = serializer.validated_data['file']
