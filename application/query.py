@@ -1,15 +1,14 @@
-import csv
 import codecs
+import csv
 import mimetypes
 import os.path
 import zipfile
-from io import StringIO
-from os import path
+from io import BytesIO
 
+from django.db import connection
 from django.http import HttpResponse
 
 from application.models import Dataset, Resource
-from django.db import connection
 
 
 def all_dataset():
@@ -61,9 +60,9 @@ def fetch_dataset(dataset_name):
     # Define the full file path
     # RESOURCE_SUFFIX = "_resource_file.csv"
     # dataset_name = "abc.csv"
-    results = Resource.objects.raw('SELECT * FROM application_resource WHERE dataset_name = %s', [dataset_name])
-    for record in Resource.objects.raw('SELECT * FROM application_resource WHERE dataset_name = %s', [dataset_name]):
-        print(record[1].location)
+    # results = Resource.objects.raw('SELECT * FROM application_resource WHERE dataset_name = %s', [dataset_name])
+    # for record in results:
+    #     print(record.location)
     filepath = f"/Users/thev/Desktop/data_platform/application/resource/{dataset_name}"
     # Open the file for reading content
     path = open(filepath, 'r')
@@ -78,7 +77,7 @@ def fetch_dataset(dataset_name):
 
 
 
-def getfiles(request):
+def getfiles(dataset_name):
     # Files (local path) to put in the .zip
     # FIXME: Change this (get paths from DB etc)
     # filenames = ["/tmp/file1.txt", "/tmp/file2.txt"]
@@ -86,11 +85,14 @@ def getfiles(request):
     # Folder name in ZIP archive which contains the above files
     # E.g [thearchive.zip]/somefiles/file2.txt
     # FIXME: Set this to something better
-    zip_subdir = "somefiles"
-    zip_filename = "%s.zip" % zip_subdir
+    results = Resource.objects.raw('SELECT * FROM application_resource WHERE dataset_name = %s', [dataset_name])
+    for record in results:
+        filenames.append(record.location)
+    zip_subdir = f"/"
+    zip_filename = "%s.zip" % dataset_name
 
     # Open StringIO to grab in-memory ZIP contents
-    s = StringIO.StringIO()
+    s = BytesIO()
 
     # The zip compressor
     zf = zipfile.ZipFile(s, "w")
@@ -107,7 +109,7 @@ def getfiles(request):
     zf.close()
 
     # Grab ZIP file from in-memory, make response with correct MIME-type
-    resp = HttpResponse(s.getvalue(), mimetype="application/x-zip-compressed")
+    resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
     # ..and correct content-disposition
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 

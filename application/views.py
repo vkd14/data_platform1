@@ -7,7 +7,9 @@ from . import query
 from . import serializers
 from . import models
 from django.http import HttpResponseRedirect
+from rest_framework_swagger.views import get_swagger_view
 
+schema_view = get_swagger_view(title='Pastebin API')
 
 # Create your views here.
 def all_dataset(request):
@@ -45,6 +47,8 @@ def fetch_dataset_detail(request, dataset_name):
     dataset = query.fetch_dataset_details(dataset_name)
     return HttpResponse(f'name = {dataset[0].name},tags = {dataset[0].tags}, description = {dataset[0].description}')
 
+def get_resorce_data(request, dataset_name):
+    return (query.getfiles(dataset_name))
 
 class UploadFileView(generics.CreateAPIView):
     serializer_class = serializers.FileUploadSerializer

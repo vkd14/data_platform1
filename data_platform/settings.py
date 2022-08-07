@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'application'
+    'rest-framework_swagger'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'data_platform.wsgi.application'
 DATABASES = {
     'default' : {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'once_again_dp',
+        'NAME': 'once_again_dp3',
         'USER': 'root',
         'PASSWORD': 'varun123',
         'HOST': '127.0.0.1',
