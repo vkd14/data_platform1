@@ -83,39 +83,6 @@ def fetch_dataset_details(dataset_name):
     return dataset
 
 
-def fetch_dataset(dataset_name):
-    """_summary_
-
-    Args:
-        dataset_name (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Define Django project base directory
-    # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # Define text file name
-    # filename = 'test.txt'
-    # Define the full file path
-    # RESOURCE_SUFFIX = "_resource_file.csv"
-    # dataset_name = "abc.csv"
-    # results = Resource.objects.raw('SELECT * FROM application_resource WHERE dataset_name = %s', [dataset_name])
-    # for record in results:
-    #     print(record.location)
-    filepath = f"/Users/thev/Desktop/data_platform/application/resource/{dataset_name}"
-    # Open the file for reading content
-    path = open(filepath, 'r')
-    # Set the mime type
-    mime_type, _ = mimetypes.guess_type(filepath)
-    # Set the return value of the HttpResponse
-    response = HttpResponse(path, content_type=mime_type)
-    # Set the HTTP header for sending to browser
-    response['Content-Disposition'] = "attachment; dataset_name=%s" % dataset_name
-    # Return the response value
-    return response 
-
-
-
 def getfiles(dataset_name):
     """_summary_
 
@@ -138,26 +105,19 @@ def getfiles(dataset_name):
     zip_subdir = f"/"
     zip_filename = "%s.zip" % dataset_name
 
-    # Open StringIO to grab in-memory ZIP contents
+
     s = BytesIO()
 
-    # The zip compressor
     zf = zipfile.ZipFile(s, "w")
 
     for fpath in filenames:
-        # Calculate path for file in zip
         fdir, fname = os.path.split(fpath)
         zip_path = os.path.join(zip_subdir, fname)
-
-        # Add file, at correct path
         zf.write(fpath, zip_path)
 
-    # Must close zip for all contents to be written
     zf.close()
 
-    # Grab ZIP file from in-memory, make response with correct MIME-type
     resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
-    # ..and correct content-disposition
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
     return resp
