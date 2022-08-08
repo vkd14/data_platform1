@@ -1,11 +1,7 @@
 from django.http import HttpResponse
 from rest_framework import generics
-from rest_framework_swagger.views import get_swagger_view
-
 from . import query
 from . import serializers
-
-schema_view = get_swagger_view(title='Pastebin API')
 
 
 # Create your views here.
@@ -40,4 +36,4 @@ class UploadFileView(generics.CreateAPIView):
         description = serializer.validated_data['description']
         print(f"{dataset_name},{description}")
         query.upload_dataset(dataset_name, file, description)
-        return HttpResponse("Upload Succesful!!")
+        return HttpResponse("Upload Successful!!")

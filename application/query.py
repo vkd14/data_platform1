@@ -1,38 +1,19 @@
 import codecs
 import csv
-import mimetypes
 import os.path
 import zipfile
 from io import BytesIO
-
 from django.db import connection
 from django.http import HttpResponse
-
 from application.models import Dataset, Resource
 
 
 def all_dataset():
-    """_summary_
-
-    Returns:
-        _type_: _description_
-    """
     datasets = Dataset.objects.raw('SELECT name FROM application_dataset')
     return datasets
 
 
 def make_csv(dataset_name, count, resource_file, description):
-    """_summary_
-
-    Args:
-        dataset_name (_type_): _description_
-        count (_type_): _description_
-        resource_file (_type_): _description_
-        description (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
     RESOURCE_SUFFIX = "_resource_file.csv"
     cursor = connection.cursor()
     csvreader = csv.reader(codecs.iterdecode(resource_file, 'utf-8'))
@@ -46,14 +27,6 @@ def make_csv(dataset_name, count, resource_file, description):
 
 
 def upload_dataset(dataset_name, resource_file, description):
-    """_summary_
-
-    Args:
-        dataset_name (_type_): _description_
-        resource_file (_type_): _description_
-        description (_type_): _description_
-    """
-
     count = Dataset.objects.filter(name=dataset_name).count()
     if not count:
         location, tags = make_csv(dataset_name, count, resource_file, description)
@@ -67,43 +40,18 @@ def upload_dataset(dataset_name, resource_file, description):
 
 
 def fetch_dataset_details(dataset_name):
-    """_summary_
-
-    Args:
-        dataset_name (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
     dataset = Dataset.objects.raw("SELECT * FROM application_dataset WHERE name= %s", [dataset_name])
     return dataset
 
 
 def getfiles(dataset_name):
-    """_summary_
-
-    Args:
-        dataset_name (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Files (local path) to put in the .zip
-    # FIXME: Change this (get paths from DB etc)
-    # filenames = ["/tmp/file1.txt", "/tmp/file2.txt"]
     filenames = []
-    # Folder name in ZIP archive which contains the above files
-    # E.g [thearchive.zip]/somefiles/file2.txt
-    # FIXME: Set this to something better
     results = Resource.objects.raw('SELECT * FROM application_resource WHERE dataset_name = %s', [dataset_name])
     for record in results:
         filenames.append(record.location)
     zip_subdir = f"/"
     zip_filename = "%s.zip" % dataset_name
-
-
     s = BytesIO()
-
     zf = zipfile.ZipFile(s, "w")
 
     for fpath in filenames:
@@ -117,4 +65,3 @@ def getfiles(dataset_name):
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
     return resp
-
